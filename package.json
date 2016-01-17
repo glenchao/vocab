@@ -4,7 +4,10 @@
   "description": "app to helpm memorizing vocab",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "webpack-dev-server --progress --colors --content-base public/",
+    "build": "webpack --progress --colors",
+    "watch": "webpack --progress --colors --watch"
   },
   "keywords": [
     "vocab"
@@ -12,10 +15,18 @@
   "author": "Glen",
   "license": "ISC",
   "dependencies": {
+    "babel-core": "^6.4.0",
     "babel-preset-react": "^6.3.13",
-    "babelify": "^7.2.0",
+    "firebase": "^2.3.2",
     "react": "^0.14.6",
     "react-dom": "^0.14.6"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "babel-loader": "^6.2.1",
+    "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.11"
+  }
 }
