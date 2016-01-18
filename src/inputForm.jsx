@@ -44,7 +44,7 @@ var InputForm = React.createClass({
     updateDefinition: function(index, text) {
         var v = Util.copyVocab(this.state.vocab);
         if (text) { v.definitions[index] = text; }
-        else { delete v.definitions[index]; }
+        else { v.definitions.splice(index, 1); }
         this.setState({vocab: v});
     },
     addExample: function(event) {
@@ -58,7 +58,7 @@ var InputForm = React.createClass({
     updateExample: function(index, text) {
         var v = Util.copyVocab(this.state.vocab);
         if (text) { v.examples[index] = text; }
-        else { delete v.examples[index]; }
+        else { v.examples.splice(index, 1); }
         this.setState({vocab: v});
     },
     onAddVocabSuceeded: function(err, id) {
