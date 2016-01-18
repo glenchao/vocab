@@ -15,24 +15,24 @@ var Store = function() {
         Vocab.off("value");
     }
 
-    function addVocab(vocab, definitions, examples, callback) {
+    function addVocab(vocab, callback) {
         if (!vocab) { return; }
         Vocab.push({
-            vocab: vocab,
-            definitions: definitions,
-            examples: examples
+            vocab: vocab.vocab,
+            definitions: vocab.definitions,
+            examples: vocab.examples
         }, function(err) {
             if (err) { alert(err); }
             if (callback && typeof callback === "function") { callback(err); }
         });
     }
     
-    function updateVocab(id, vocab, definitions, examples, callback) {
+    function updateVocab(vocab, callback) {
         if (!vocab) { return; }
-        Vocab.child(id).update({
-            vocab: vocab,
-            definitions: definitions,
-            examples: examples
+        Vocab.child(vocab.id).update({
+            vocab: vocab.vocab,
+            definitions: vocab.definitions,
+            examples: vocab.examples
         }, function(err) {
             if (err) { alert(err); }
             else { 

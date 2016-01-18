@@ -5,16 +5,22 @@ var VocabList = require("./vocabList");
 var InputForm = require("./inputForm");
 
 var App = React.createClass({
+    getInitialState: function() {
+        return {vocab: {}};
+    },
+    onSelectionChanged: function(vocab) {
+        this.setState({vocab: vocab});
+    },
     render: function() {
         return <div>
                     <TopNav />
                     <div className="container-fluid">
                         <div className="row"> 
                             <div className="col-sm-3">
-                                <VocabList />
+                                <VocabList onSelectionChanged={this.onSelectionChanged} />
                             </div>
                             <div className="col-sm-4">
-                                <InputForm />
+                                <InputForm vocab={this.state.vocab}/>
                             </div>
                         </div>
                    </div>

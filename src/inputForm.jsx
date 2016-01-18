@@ -4,44 +4,61 @@ var VocabStore = require("./vocabStore");
 
 var InputForm = React.createClass({
     changeVocab: function(event) {
-        this.setState({vocab: event.target.value});
+        var v = this.state.vocab;
+        v.vocab = event.target.value;
+        this.setState({vocab: v});
     },
     addDefinition: function(event) {
         if (event.key === "Enter") {
-            var defs = this.state.definitions;
-            defs.push(event.target.value);
-            this.setState({definitions: defs});
+            var v = this.state.vocab;
+            v.definitions.push(event.target.value);
+            this.setState({vocab: v});
         }
     },
     addExample: function(event) {
         if (event.key === "Enter") {
-            var examples = this.state.examples;
-            examples.push(event.target.value);
-            this.setState({examples: examples});
+            var v = this.state.vocab;
+            v.examples.push(event.target.value);
+            this.setState({vocab: v});
         }
     },
     save: function() {
-        VocabStore.addVocab(this.state.vocab, this.state.definitions, this.state.examples);
+        if (this.state.vocab.id) {
+            VocabStore.updateVocab(this.state.vocab);
+        }
+        else {
+            VocabStore.addVocab(this.state.vocab);
+        }
     },
-    getInitialState: function() {
+    normalizeVocab: function(v) {
         return {
-            vocab: "",
-            definitions: [],
-            examples: []
+            vocab: {
+                id: v.id || "",
+                vocab: v.vocab || "",
+                definitions: v.definitions || [],
+                examples: v.examples || []
+            }
         };
     },
+    getInitialState: function() {
+        return this.normalizeVocab(this.props.vocab);
+    },
+    componentWillReceiveProps: function(nextProps) {
+        this.setState(this.normalizeVocab(nextProps.vocab));
+    },
     render: function() {
-        var definitions = this.state.definitions.map(function(value, index) {
+        var vocab = this.state.vocab;
+        var definitions = vocab.definitions.map(function(value, index) {
             return <DefinitionControl text={value} key={index} />
         });
-        var examples = this.state.examples.map(function(value, index) {
+        var examples = vocab.examples.map(function(value, index) {
             return <DefinitionControl text={value} key={index}/>
-        })
-        return <div className="container-fluid">
+        });
+        return <div className="container-fluid" key={vocab.id}>
                     <form>
                         <div className="form-group">
                             <label htmlFor="vocabInput">Vocab</label>
-                            <input id="vocabInput" className="form-control" type="text" placeholder="New vocab to add..." onKeyUp={this.changeVocab}></input>
+                            <input id="vocabInput" className="form-control" type="text" placeholder="New vocab to add..." onChange={this.changeVocab} value={vocab.vocab}></input>
                         </div>
                         <div className="form-group">
                             <label htmlFor="definitionInput">Definitions</label>

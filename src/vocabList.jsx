@@ -3,8 +3,14 @@ var VocabListItem = require("./vocabListItem");
 var VocabStore = require("./vocabStore");
 
 var VocabList = React.createClass({
+    updateCurrentVocab: function(vocab) {
+        this.setState({selectedVocab: vocab});
+        // todo: figure out how to stop re-rendering
+        if (this.props.onSelectionChanged)
+            this.props.onSelectionChanged(vocab);
+    },
     getInitialState: function() {
-        return {vocabs: []};
+        return {vocabs: [], selectedVocab: {}};
     },
     componentWillMount: function() {
         var _this = this;
@@ -16,10 +22,13 @@ var VocabList = React.createClass({
         VocabStore.offVocab();
     },
     render: function() {
-        var listItems = this.state.vocabs.map(function(value, index) {
-            return <VocabListItem text={value.vocab} key={index} />;
+        var _this = this;
+        var listItems = this.state.vocabs.map(function(vocab, index) {
+            var bIsSelected = (!!_this.state.selectedVocab && vocab.id === _this.state.selectedVocab.id);
+            return <VocabListItem vocab={vocab} onSelected={_this.updateCurrentVocab} isSelected={bIsSelected} key={index} />;
         });
-        return <div>{listItems}</div>;
+
+        return <div className="list-group">{listItems}</div>;
     }
 });
 
