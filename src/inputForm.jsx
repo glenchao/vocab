@@ -2,11 +2,25 @@ var React = require("react");
 var DefinitionControl = require("./definitionControl");
 var VocabStore = require("./vocabStore");
 
+var vocabInputTimer;
+
 var InputForm = React.createClass({
+    clearVocabInputTimer: function() {
+        window.clearTimeout(vocabInputTimer);
+        vocabInputTimer = null;
+    },
     changeVocab: function(event) {
+        var _this = this;
         var v = this.state.vocab;
         v.vocab = event.target.value;
         this.setState({vocab: v});
+        this.clearVocabInputTimer();
+        vocabInputTimer = window.setTimeout(function() {
+            if (_this.props.onNewVocab && typeof _this.props.onNewVocab === "function") {
+                _this.props.onNewVocab(v);
+            }
+            _this.clearVocabInputTimer();
+        }, 500);
     },
     addDefinition: function(event) {
         if (event.key === "Enter") {
@@ -27,7 +41,9 @@ var InputForm = React.createClass({
     onAddVocabSuceeded: function(err, id) {
         var v = this.state.vocab;
         v.id = id;
-        this.setState({vocab: v});
+        if (this.props.onNewVocab && typeof this.props.onNewVocab === "function") {
+            this.props.onNewVocab(v);
+        }
     },
     save: function() {
         if (this.state.vocab.id) {

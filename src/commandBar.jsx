@@ -7,8 +7,10 @@ var CommandBar = React.createClass({
         }
     },
     render: function() {
-        return <div className="btn-toolbar" role="toolbar">
-                    <button type="button" className="btn btn-primary" onClick={this.onClick}>New Vocab</button>
+        return <div>
+                    <button type="button" className="btn btn-success navbar-btn" onClick={this.onClick}>
+                        <span className="glyphicon glyphicon-plus"></span> New Vocab
+                    </button>
                </div>;
     }
 });

@@ -2,6 +2,12 @@ var React = require("react");
 var VocabListItem = require("./vocabListItem");
 var VocabStore = require("./vocabStore");
 
+var style = {
+    height: "100%",
+    overflow: "auto",
+    paddingBottom: "50px"
+};
+
 var VocabList = React.createClass({
     updateCurrentVocab: function(vocab) {
         this.setState({selectedVocab: vocab});
@@ -15,11 +21,19 @@ var VocabList = React.createClass({
     componentWillMount: function() {
         var _this = this;
         VocabStore.onVocab(function(vocabs) {
-            _this.setState({vocabs: vocabs});
+            _this.setState({vocabs: vocabs.reverse()});
         });
     },
     componentWillUnmount: function() {
         VocabStore.offVocab();
+    },
+    componentWillReceiveProps: function(nextProps) {
+        if (nextProps.selectedVocab) {
+            this.setState({
+                vocabs: this.state.vocabs,
+                selectedVocab: nextProps.selectedVocab
+            });
+        }
     },
     render: function() {
         var _this = this;
@@ -28,7 +42,7 @@ var VocabList = React.createClass({
             return <VocabListItem vocab={vocab} onSelected={_this.updateCurrentVocab} isSelected={bIsSelected} key={index} />;
         });
 
-        return <div className="list-group">{listItems}</div>;
+        return <div className="list-group" style={style}>{listItems}</div>;
     }
 });
 

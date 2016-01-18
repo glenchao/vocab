@@ -2,7 +2,7 @@ var React = require("react");
 
 var style = {
     fontSize: "13pt",
-    
+    cursor: "pointer"
 };
 var VocabListItem = React.createClass({
     onSelected: function(event) {
@@ -12,8 +12,8 @@ var VocabListItem = React.createClass({
     },
     render: function() {
         var className = this.props.isSelected ? "list-group-item active" : "list-group-item";
-        return <a className={className} href="#" onClick={this.onSelected}>
-                    <span style={style}>{this.props.vocab.vocab}</span>
+        return <a className={className} style={style} onClick={this.onSelected}>
+                    <span>{this.props.vocab.vocab}</span>
                </a>;
     }
 });
