@@ -17,15 +17,15 @@ var Store = function() {
 
     function addVocab(vocab, callback) {
         if (!vocab) { return; }
-        Vocab.push({
-            vocab: vocab.vocab,
-            definitions: vocab.definitions,
-            examples: vocab.examples
-        }, function(err) {
-            if (err) { alert(err); }
-            if (callback && typeof callback === "function") { callback(err); }
-        });
-    }
+        var data = Vocab.push({
+                vocab: vocab.vocab,
+                definitions: vocab.definitions,
+                examples: vocab.examples
+            }, function(err) {
+                if (err) { alert(err); }
+                if (callback && typeof callback === "function") { callback(err, data.key()); }
+            });
+        }
     
     function updateVocab(vocab, callback) {
         if (!vocab) { return; }

@@ -12,6 +12,7 @@ var InputForm = React.createClass({
         if (event.key === "Enter") {
             var v = this.state.vocab;
             v.definitions.push(event.target.value);
+            event.target.value = "";
             this.setState({vocab: v});
         }
     },
@@ -19,18 +20,25 @@ var InputForm = React.createClass({
         if (event.key === "Enter") {
             var v = this.state.vocab;
             v.examples.push(event.target.value);
+            event.target.value = "";
             this.setState({vocab: v});
         }
+    },
+    onAddVocabSuceeded: function(err, id) {
+        var v = this.state.vocab;
+        v.id = id;
+        this.setState({vocab: v});
     },
     save: function() {
         if (this.state.vocab.id) {
             VocabStore.updateVocab(this.state.vocab);
         }
         else {
-            VocabStore.addVocab(this.state.vocab);
+            VocabStore.addVocab(this.state.vocab, this.onAddVocabSuceeded);
         }
     },
     normalizeVocab: function(v) {
+        if (!v) { v = {}; }
         return {
             vocab: {
                 id: v.id || "",

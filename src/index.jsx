@@ -1,6 +1,7 @@
 var React = require("react");
 var ReactDOM = require('react-dom');
 var TopNav = require("./topNav");
+var CommandBar = require("./commandBar");
 var VocabList = require("./vocabList");
 var InputForm = require("./inputForm");
 
@@ -17,6 +18,7 @@ var App = React.createClass({
                     <div className="container-fluid">
                         <div className="row"> 
                             <div className="col-sm-3">
+                                <CommandBar onNewVocab={this.onSelectionChanged} />
                                 <VocabList onSelectionChanged={this.onSelectionChanged} />
                             </div>
                             <div className="col-sm-4">
