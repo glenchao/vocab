@@ -3,7 +3,7 @@ var Vocab = new Firebase("https://def.firebaseio.com/Vocab");
 var Util = require("./util");
 
 var Store = function() {
-    function onVocab(callback) {
+    function on(callback) {
         Vocab.on("value", function(data) {
             if (callback && typeof callback === "function") {
                 callback(Util.objectToArray(data.val()));
@@ -11,12 +11,12 @@ var Store = function() {
         });
     }
 
-    function offVocab() {
+    function off() {
         Vocab.off("value");
     }
 
-    function addVocab(vocab, callback) {
-        if (!vocab) { return; }
+    function add(vocab, callback) {
+        if (!vocab || !vocab.vocab) { return; }
         var data = Vocab.push({
                 vocab: vocab.vocab,
                 definitions: vocab.definitions,
@@ -27,8 +27,8 @@ var Store = function() {
             });
         }
     
-    function updateVocab(vocab, callback) {
-        if (!vocab) { return; }
+    function update(vocab, callback) {
+        if (!vocab || !vocab.id || !vocab.vocab) { return; }
         Vocab.child(vocab.id).update({
             vocab: vocab.vocab,
             definitions: vocab.definitions,
@@ -40,12 +40,18 @@ var Store = function() {
             }
         });
     }
+
+    // delete is a js keyword
+    function remove(id, callback) {
+        Vocab.child(id).remove(callback);
+    }
     
     return {
-        addVocab: addVocab,
-        updateVocab: updateVocab,
-        onVocab: onVocab,
-        offVocab: offVocab
+        add: add,
+        update: update,
+        delete: remove,
+        on: on,
+        off: off
     };
 }();
 

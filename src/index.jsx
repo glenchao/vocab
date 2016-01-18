@@ -21,6 +21,9 @@ var App = React.createClass({
     getInitialState: function() {
         return {vocab: null};
     },
+    onVocabChanged: function(vocab) {
+        
+    },
     onSelectionChanged: function(vocab) {
         this.setState({vocab: vocab});
     },

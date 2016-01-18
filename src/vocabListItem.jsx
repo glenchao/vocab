@@ -2,7 +2,10 @@ var React = require("react");
 
 var style = {
     fontSize: "13pt",
-    cursor: "pointer"
+    cursor: "pointer",
+    borderRadius: "0px",
+    borderLeft: "none", 
+    borderRight: "none"
 };
 var VocabListItem = React.createClass({
     onSelected: function(event) {

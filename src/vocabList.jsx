@@ -20,12 +20,12 @@ var VocabList = React.createClass({
     },
     componentWillMount: function() {
         var _this = this;
-        VocabStore.onVocab(function(vocabs) {
+        VocabStore.on(function(vocabs) {
             _this.setState({vocabs: vocabs.reverse()});
         });
     },
     componentWillUnmount: function() {
-        VocabStore.offVocab();
+        VocabStore.off();
     },
     componentWillReceiveProps: function(nextProps) {
         if (nextProps.selectedVocab) {
