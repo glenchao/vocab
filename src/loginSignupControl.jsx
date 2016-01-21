@@ -33,7 +33,7 @@ var style = {
 };
 
 var LoginControl = React.createClass({
-    loginUser: function() {
+    loginUser: function(event) {
         var _this = this;
         ref.authWithPassword({
             email: this.state.email,
@@ -44,6 +44,7 @@ var LoginControl = React.createClass({
                 console.log(authData);
             }
         });
+        event.preventDefault();
         return false;
     },
     getInitialState: function() {
@@ -97,7 +98,7 @@ var LoginControl = React.createClass({
 });
 
 var SignupControl = React.createClass({
-    createUser: function() {
+    createUser: function(event) {
         var _this = this;
         ref.createUser({
             email: this.state.email,
@@ -108,6 +109,7 @@ var SignupControl = React.createClass({
                 console.log(userData);
             }
         });
+        event.preventDefault();
         return false;
     },
     getInitialState: function() {
