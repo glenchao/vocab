@@ -1,5 +1,7 @@
 var React = require("react");
 var ReactDOM = require('react-dom');
+var Firebase = require("firebase");
+var LoginSignupControl = require("./loginSignupControl");
 var TopNav = require("./topNav");
 var VocabList = require("./vocabList");
 var InputForm = require("./inputForm");
@@ -29,7 +31,7 @@ var App = React.createClass({
     },
     render: function() {
         return <div>
-                    <TopNav onNewVocab={this.onSelectionChanged} />
+                    <TopNav onNewVocab={this.onSelectionChanged} authData={this.props.authData}/>
                     <div className="container-fluid">
                         <div className="row" style={style.container}> 
                             <div className="col-sm-3" style={style.col}>
@@ -47,4 +49,14 @@ var App = React.createClass({
     }
 });
 
-ReactDOM.render(<App />, document.getElementById("appContainer"));
+var appContainer = document.getElementById("appContainer");
+var ref = new Firebase("https://def.firebaseio.com");
+
+ref.onAuth(function (authData) {
+    if (authData) {
+        ReactDOM.render(<App authData={authData} />, appContainer);
+    }
+    else {
+        ReactDOM.render(<LoginSignupControl />, appContainer);
+    }
+});

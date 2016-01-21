@@ -51,5 +51,10 @@ module.exports = {
             }
         }
         return true;
+    },
+    getUserDisplayNameFromAuthData: function(authData) {
+        switch (authData.provider) {
+            case "password": return authData.password.email;
+        }
     }
 };
