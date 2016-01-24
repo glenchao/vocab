@@ -30,6 +30,7 @@ var App = React.createClass({
         this.setState({vocab: vocab});
     },
     render: function() {
+        var word = this.state.vocab ? this.state.vocab.vocab : "";
         return <div>
                     <TopNav onNewVocab={this.onSelectionChanged} authData={this.props.authData}/>
                     <div className="container-fluid">
@@ -41,7 +42,7 @@ var App = React.createClass({
                                 <InputForm vocab={this.state.vocab} onNewVocab={this.onSelectionChanged} />
                             </div>
                             <div className="col-sm-5" style={style.col}>
-                                <DictionaryFrame vocab={this.state.vocab} />
+                                <DictionaryFrame word={word} />
                             </div>
                         </div>
                    </div>

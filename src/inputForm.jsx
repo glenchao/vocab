@@ -4,6 +4,10 @@ var DefinitionControl = require("./definitionControl");
 var VocabStore = require("./vocabStore");
 
 var style = {
+    container: {
+        height: "100%",
+        overflow: "auto"
+    },
     title: {
         fontSize: "30pt",
         fontWeight: "bold",
@@ -116,7 +120,7 @@ var InputForm = React.createClass({
             return <DefinitionControl key={index} index={index} text={value} onDefinitionUpdated={_this.updateExample} />
         });
         var deleteButton = vocab.id ? <button type="button" className="btn btn-danger" style={style.button} onClick={this.delete}>Delete</button> : <span></span>;
-        return <div className="container-fluid" key={vocab.id}>
+        return <div className="container-fluid" key={vocab.id} style={style.container}>
                     <div style={style.title}>{title}</div>
                     <form>
                         <div className="form-group">

@@ -42,7 +42,7 @@ var VocabList = React.createClass({
             return <VocabListItem vocab={vocab} onSelected={_this.updateCurrentVocab} isSelected={bIsSelected} key={index} />;
         });
 
-        return <div className="list-group" style={style}>{listItems}</div>;
+        return <div className="list-group container-fluid" style={style}>{listItems}</div>;
     }
 });
 
