@@ -7,7 +7,7 @@ var CommandBar = React.createClass({
         }
     },
     render: function() {
-        return <div>
+        return <div className="container-fluid">
                     <button type="button" className="btn btn-success navbar-btn" onClick={this.onClick}>
                         <span className="glyphicon glyphicon-plus"></span> New Vocab
                     </button>

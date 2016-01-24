@@ -13,25 +13,34 @@ var TopNav = React.createClass({
         ref.unauth();
     },
     render: function() {
+        
         var displayName = Util.getUserDisplayNameFromAuthData(this.props.authData);
         return <nav className="navbar navbar-inverse" style={style.navbar}>
                     <div className="container-fluid">
                         <div className="navbar-header">
                             <a className="navbar-brand" href="#" style={style.logo}>Vocab</a>
+                            <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-commands" aria-expanded="false">
+                                <span className="sr-only">Toggle navigation</span>
+                                <span className="icon-bar"></span>
+                                <span className="icon-bar"></span>
+                                <span className="icon-bar"></span>
+                            </button>
                         </div>
-                        <div className="nav navbar-nav">
-                            <CommandBar onNewVocab={this.props.onNewVocab} />
+                        <div className="collapse navbar-collapse" id="navbar-commands">
+                            <div className="nav navbar-nav">
+                                <CommandBar onNewVocab={this.props.onNewVocab} />
+                            </div>
+                            <ul className="nav navbar-nav navbar-right">
+                                <li className="dropdown">
+                                    <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        {displayName} <span className="caret"></span>
+                                    </a>
+                                    <ul className="dropdown-menu">
+                                        <li><a href="#" onClick={this.logout}>Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
                         </div>
-                        <ul className="nav navbar-nav navbar-right">
-                            <li className="dropdown">
-                                <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    {displayName} <span className="caret"></span>
-                                </a>
-                                <ul className="dropdown-menu">
-                                    <li><a href="#" onClick={this.logout}>Logout</a></li>
-                                </ul>
-                            </li>
-                        </ul>
                     </div>
                </nav>;
     }

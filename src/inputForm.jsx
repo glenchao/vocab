@@ -9,7 +9,7 @@ var style = {
         overflow: "auto"
     },
     title: {
-        fontSize: "30pt",
+        fontSize: "20pt",
         fontWeight: "bold",
         paddingBottom: "20px"
     },

@@ -8,6 +8,11 @@ var style = {
         overflow: "auto",
         paddingBottom: "50px"
     },
+    heading: {
+        fontSize: "20pt",
+        fontWeight: "bold",
+        paddingBottom: "25px"
+    },
     emptyMessage: {
         fontSize: "15pt",
         color: "darkGrey"
@@ -50,7 +55,7 @@ var VocabList = React.createClass({
         }
 
         return <div className="list-group container-fluid" style={style.container}>
-                    <h3>Vocab List</h3>
+                    <div style={style.heading}>Vocab List</div>
                     {listItems}
                </div>;
     }
