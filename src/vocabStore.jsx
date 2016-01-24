@@ -1,6 +1,18 @@
 var Firebase = require("firebase");
-var Vocab = new Firebase("https://def.firebaseio.com/Vocab");
 var Util = require("./util");
+
+var ref = new Firebase("https://def.firebaseio.com");
+var Vocab = null;
+
+ref.onAuth(function (authData) {
+    if (authData) {
+        Vocab = ref.child("vocab").child(authData.uid);
+    }
+    else if (Vocab) {
+        Vocab.off("value");
+        Vocab = null;
+    }
+});
 
 var Store = function() {
     function on(callback) {
@@ -9,10 +21,6 @@ var Store = function() {
                 callback(Util.objectToArray(data.val()));
             }
         });
-    }
-
-    function off() {
-        Vocab.off("value");
     }
 
     function add(vocab, callback) {
@@ -26,7 +34,7 @@ var Store = function() {
                 if (callback && typeof callback === "function") { callback(err, data.key()); }
             });
         }
-    
+
     function update(vocab, callback) {
         if (!vocab || !vocab.id || !vocab.vocab) { return; }
         Vocab.child(vocab.id).update({
@@ -50,8 +58,7 @@ var Store = function() {
         add: add,
         update: update,
         delete: remove,
-        on: on,
-        off: off
+        on: on
     };
 }();
 

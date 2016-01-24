@@ -70,6 +70,9 @@ var DefinitionComponent = React.createClass({
 
 var DictionaryFrame = React.createClass({
     makeWordRequest: function(word, callback) {
+        var empty = {word: "", results: []};
+        if (!word) { callback(empty); return; }
+
         var _this = this;
         $.ajax({
             url: getRequestUrl(requestTypes.words, word), 
@@ -80,7 +83,7 @@ var DictionaryFrame = React.createClass({
                 callback(data);
             },
             error: function(err) { 
-                callback({word: "", results: []});
+                callback(empty);
              },
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("X-Mashape-Authorization", apiKey);
@@ -88,6 +91,9 @@ var DictionaryFrame = React.createClass({
         });
     },
     makeExamplesRequest: function(word, callback) {
+        var empty = {word: "", results: []};
+        if (!word) { callback(empty); return; }
+
         var _this = this;
         $.ajax({
             url: getRequestUrl(requestTypes.examples, word), 
@@ -98,7 +104,7 @@ var DictionaryFrame = React.createClass({
                 callback(data); 
             },
             error: function(err) { 
-                callback({word: "", results: []}); 
+                callback(empty); 
             },
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("X-Mashape-Authorization", apiKey);
@@ -115,7 +121,7 @@ var DictionaryFrame = React.createClass({
         });
     },
     renderDefinitionComponents: function(components) {
-        if (!components) { return <div></div>; }
+        if (!components || components.length === 0) { return <div></div>; }
 
         return components.map(function(value, index) {
             return <DefinitionComponent key={index} data={value}/>;

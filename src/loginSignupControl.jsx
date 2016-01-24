@@ -106,7 +106,15 @@ var SignupControl = React.createClass({
         }, function(err, userData) {
             if (err) { alert(err); }
             else {
-                console.log(userData);
+                ref.authWithPassword({
+                    email: _this.state.email,
+                    password: _this.state.password
+                }, function(err, authData) {
+                    if (err) { alert(err); }
+                    else {
+                        console.log(authData);
+                    }
+                });
             }
         });
         event.preventDefault();
