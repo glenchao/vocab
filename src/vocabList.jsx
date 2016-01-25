@@ -5,7 +5,6 @@ var VocabStore = require("./vocabStore");
 var style = {
     container: {
         maxHeight: "calc(100% - 25px)",
-        overflow: "auto",
     },
     heading: {
         fontSize: "20pt",

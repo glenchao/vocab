@@ -14,8 +14,8 @@ var style= {
         marginTop: "70px"
     },
     col: {
-        height: "100%",
-        // overflow: "auto"
+        maxHeight: "100%",
+        overflow: "auto"
     }
 };
 
