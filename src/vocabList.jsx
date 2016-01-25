@@ -4,7 +4,7 @@ var VocabStore = require("./vocabStore");
 
 var style = {
     container: {
-        maxHeight: "calc(100% - 25px)",
+        maxHeight: "100%",
     },
     heading: {
         fontSize: "20pt",
@@ -52,7 +52,7 @@ var VocabList = React.createClass({
             });
         }
 
-        return <div className="list-group container-fluid" style={style.container}>
+        return <div className="list-group" style={style.container}>
                     <div style={style.heading}>Vocab List</div>
                     {listItems}
                </div>;

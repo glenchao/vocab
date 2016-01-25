@@ -13,7 +13,7 @@ var style= {
         height: Util.getContentHeight()
     },
     col: {
-        maxHeight: "100%",
+        maxHeight: "calc(100% - 25px)",
         overflow: "auto",
         marginTop: "70px"
     }

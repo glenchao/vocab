@@ -129,7 +129,7 @@ var DictionaryFrame = React.createClass({
     },
     render: function() {
         var components = this.renderDefinitionComponents(this.state.results);
-        return <div style={style.frame} className="container-fluid">{components}</div>;
+        return <div style={style.frame}>{components}</div>;
     }
 });
 
