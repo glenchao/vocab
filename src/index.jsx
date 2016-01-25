@@ -11,6 +11,7 @@ var Util = require("./util");
 var style= {
     container: {
         height: Util.getContentHeight(),
+        marginTop: "70px"
     },
     col: {
         height: "100%",

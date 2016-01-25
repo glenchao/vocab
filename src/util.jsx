@@ -1,5 +1,5 @@
 module.exports = {
-    navbarHeight: 72,
+    navbarHeight: 75,
     objectToArray: function(obj) {
         var ret = [];
         for (var key in obj) {

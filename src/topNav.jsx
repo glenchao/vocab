@@ -1,21 +1,22 @@
 var React = require("react");
 var Firebase = require("firebase");
-var CommandBar = require("./commandBar");
 var Util = require("./util");
 
 var ref = new Firebase("https://def.firebaseio.com");
 var style = {
     navbar: { borderRadius: "0px" },
-    logo: { paddingRight: "30px" }
+    logo: { paddingRight: "30px" },
+    button: {
+        marginLeft: "10px"
+    }
 };
 var TopNav = React.createClass({
     logout: function() {
         ref.unauth();
     },
     render: function() {
-        
         var displayName = Util.getUserDisplayNameFromAuthData(this.props.authData);
-        return <nav className="navbar navbar-inverse" style={style.navbar}>
+        return <nav className="navbar navbar-inverse navbar-fixed-top" style={style.navbar}>
                     <div className="container-fluid">
                         <div className="navbar-header">
                             <a className="navbar-brand" href="#" style={style.logo}>Vocab</a>
@@ -28,7 +29,12 @@ var TopNav = React.createClass({
                         </div>
                         <div className="collapse navbar-collapse" id="navbar-commands">
                             <div className="nav navbar-nav">
-                                <CommandBar onNewVocab={this.props.onNewVocab} />
+                                <button type="button" className="btn btn-success navbar-btn" style={style.button} onClick={this.props.onNewVocab}>
+                                    <span className="glyphicon glyphicon-plus"></span> New Vocab
+                                </button>
+                                <button type="button" className="btn btn-primary navbar-btn" style={style.button} onClick={this.props.onNewVocab}>
+                                    <span className="glyphicon glyphicon-pencil"></span> Review Vocab
+                                </button>
                             </div>
                             <ul className="nav navbar-nav navbar-right">
                                 <li className="dropdown">

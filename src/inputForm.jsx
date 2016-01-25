@@ -142,8 +142,8 @@ var InputForm = React.createClass({
                             {examples}
                         </div>
                         <div className="form-group pull-right">
-                            <button type="button" className="btn btn-primary" style={style.button} onClick={this.save}>Save</button>
                             {deleteButton}
+                            <button type="button" className="btn btn-primary" style={style.button} onClick={this.save}>Save</button>
                         </div>
                     </form>
                </div>;
