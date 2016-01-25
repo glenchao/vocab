@@ -10,12 +10,12 @@ var Util = require("./util");
 
 var style= {
     container: {
-        height: Util.getContentHeight(),
-        marginTop: "70px"
+        height: Util.getContentHeight()
     },
     col: {
         maxHeight: "100%",
-        overflow: "auto"
+        overflow: "auto",
+        marginTop: "70px"
     }
 };
 
