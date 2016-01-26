@@ -7,7 +7,7 @@ var VocabList = require("./vocabList");
 var InputForm = require("./inputForm");
 var DictionaryFrame = require("./dictionaryFrame");
 var Util = require("./util");
-var Vocab = require("./VocabModel");
+var Vocab = require("./vocabModel");
 
 var style= {
     container: {

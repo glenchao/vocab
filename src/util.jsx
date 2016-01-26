@@ -1,4 +1,4 @@
-var Vocab = require("./VocabModel");
+var Vocab = require("./vocabModel");
 
 module.exports = {
     navbarHeight: 75,
