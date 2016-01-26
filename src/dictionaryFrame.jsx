@@ -83,8 +83,6 @@ var DictionaryFrame = React.createClass({
             type: 'GET',
             dataType: 'json',
             success: function(data) {
-                console.log(data);
-                _this.update = true;
                 callback(data);
             },
             error: function(err) { 
@@ -101,15 +99,17 @@ var DictionaryFrame = React.createClass({
     componentWillReceiveProps: function(nextProps) {
         var _this = this;
         var delay = nextProps.delay || 0;
-        window.clearTimeout(vocabInputTimer);
-        vocabInputTimer = window.setTimeout(function() {
-            _this.makeWordRequest(nextProps.word, function(data) {
-                _this.setState(data);
-            });
-        }, delay);
-    },
-    shouldComponentUpdate: function(nextProps, nextState) {
-        return nextProps.word != this.props.word || this.update;
+        if (nextProps.word) {
+            window.clearTimeout(vocabInputTimer);
+            vocabInputTimer = window.setTimeout(function() {
+                _this.makeWordRequest(nextProps.word, function(data) {
+                    _this.setState(data);
+                });
+            }, delay);
+        }
+        else {
+            this.setState({results: []});
+        }
     },
     renderDefinitionComponents: function(components) {
         if (!components || components.length === 0) { return <div></div>; }
@@ -119,7 +119,6 @@ var DictionaryFrame = React.createClass({
         });
     },
     render: function() {
-        this.update = false;
         var components = this.renderDefinitionComponents(this.state.results);
         return <div style={style.frame}>{components}</div>;
     }
