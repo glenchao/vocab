@@ -2,6 +2,7 @@ var React = require("react");
 var Util = require("./util");
 var DefinitionControl = require("./definitionControl");
 var VocabStore = require("./vocabStore");
+var Vocab = require("./vocabModel");
 
 var style = {
     container: {
@@ -16,25 +17,16 @@ var style = {
         marginLeft: "10px"
     }
 };
-var vocabInputTimer;
 
 var InputForm = React.createClass({
-    clearVocabInputTimer: function() {
-        window.clearTimeout(vocabInputTimer);
-        vocabInputTimer = null;
-    },
     changeVocab: function(event) {
         var _this = this;
         var v = Util.copyVocab(this.state.vocab);
-        v.vocab = event.target.value;
+        v.word = event.target.value;
         this.setState({vocab: v});
-        this.clearVocabInputTimer();
-        vocabInputTimer = window.setTimeout(function() {
-            if (_this.props.onNewVocab && typeof _this.props.onNewVocab === "function") {
-                _this.props.onNewVocab(v);
-            }
-            _this.clearVocabInputTimer();
-        }, 1000);
+        if (_this.props.onVocabWordChanged && typeof _this.props.onVocabWordChanged === "function") {
+            _this.props.onVocabWordChanged(v);
+        }
     },
     addDefinition: function(event) {
         if (event.key === "Enter" && !!event.target.value) {
@@ -67,8 +59,8 @@ var InputForm = React.createClass({
     onAddVocabSuceeded: function(err, id) {
         var v = this.state.vocab;
         v.id = id;
-        if (this.props.onNewVocab && typeof this.props.onNewVocab === "function") {
-            this.props.onNewVocab(v);
+        if (this.props.onNewVocabCreated && typeof this.props.onNewVocabCreated === "function") {
+            this.props.onNewVocabCreated(v);
         }
     },
     save: function() {
@@ -82,27 +74,16 @@ var InputForm = React.createClass({
     delete: function() {
         var _this = this;
         VocabStore.delete(this.state.vocab.id, function() {
-            if (_this.props.onNewVocab && typeof _this.props.onNewVocab === "function") {
-                _this.props.onNewVocab();
+            if (_this.props.onNewVocabCreated && typeof _this.props.onNewVocabCreated === "function") {
+                _this.props.onNewVocabCreated();
             }
         });
     },
-    normalizeVocab: function(v) {
-        if (!v) { v = {}; }
-        return {
-            vocab: {
-                id: v.id || "",
-                vocab: v.vocab || "",
-                definitions: v.definitions || [],
-                examples: v.examples || []
-            }
-        };
-    },
     getInitialState: function() {
-        return this.normalizeVocab(this.props.vocab);
+        return {vocab: new Vocab()};
     },
     componentWillReceiveProps: function(nextProps) {
-        this.setState(this.normalizeVocab(nextProps.vocab));
+        this.setState({vocab: nextProps.vocab});
     },
     shouldComponentUpdate: function(nextProps, nextState) {
         return !(Util.compareVocabs(this.props.vocab, nextProps.vocab) &&
@@ -111,20 +92,22 @@ var InputForm = React.createClass({
     render: function() {
         var _this = this;
         var vocab = this.state.vocab;
-        var title = vocab.vocab || "Add a new vocab";
+        var title = vocab.word || "Add a new vocab";
         var definitions = vocab.definitions.map(function(value, index) {
             return <DefinitionControl key={index} index={index} text={value} onDefinitionUpdated={_this.updateDefinition} />
         });
         var examples = vocab.examples.map(function(value, index) {
             return <DefinitionControl key={index} index={index} text={value} onDefinitionUpdated={_this.updateExample} />
         });
+        // only render delete button is the vocab has already been saved
         var deleteButton = vocab.id ? <button type="button" className="btn btn-danger" style={style.button} onClick={this.delete}>Delete</button> : <span></span>;
+        // render
         return <div key={vocab.id} style={style.container}>
                     <div style={style.title}>{title}</div>
                     <form>
                         <div className="form-group">
                             <label htmlFor="vocabInput">Vocab</label>
-                            <input id="vocabInput" className="form-control" type="text" placeholder="New vocab to add..." onChange={this.changeVocab} value={vocab.vocab}></input>
+                            <input id="vocabInput" className="form-control" type="text" placeholder="New vocab to add..." onChange={this.changeVocab} value={vocab.word}></input>
                         </div>
                         <div className="form-group">
                             <label htmlFor="definitionInput">Definitions</label>

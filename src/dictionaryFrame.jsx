@@ -68,7 +68,11 @@ var DefinitionComponent = React.createClass({
     }
 });
 
+var vocabInputTimer;
 var DictionaryFrame = React.createClass({
+    onVocabWordChanged: function(word) {
+        
+    },
     makeWordRequest: function(word, callback) {
         var empty = {word: "", results: []};
         if (!word) { callback(empty); return; }
@@ -80,6 +84,7 @@ var DictionaryFrame = React.createClass({
             dataType: 'json',
             success: function(data) {
                 console.log(data);
+                _this.update = true;
                 callback(data);
             },
             error: function(err) { 
@@ -90,35 +95,21 @@ var DictionaryFrame = React.createClass({
             }
         });
     },
-    makeExamplesRequest: function(word, callback) {
-        var empty = {word: "", results: []};
-        if (!word) { callback(empty); return; }
-
-        var _this = this;
-        $.ajax({
-            url: getRequestUrl(requestTypes.examples, word), 
-            type: 'GET',
-            dataType: 'json',
-            success: function(data) { 
-                console.log(data);
-                callback(data); 
-            },
-            error: function(err) { 
-                callback(empty); 
-            },
-            beforeSend: function(xhr) {
-                xhr.setRequestHeader("X-Mashape-Authorization", apiKey);
-            }
-        });
-    },
     getInitialState: function() {
-        return {word: this.props.word, results: []};
+        return {results: []};
     },
     componentWillReceiveProps: function(nextProps) {
         var _this = this;
-        this.makeWordRequest(nextProps.word, function(data) {
-            _this.setState(data);
-        });
+        var delay = nextProps.delay || 0;
+        window.clearTimeout(vocabInputTimer);
+        vocabInputTimer = window.setTimeout(function() {
+            _this.makeWordRequest(nextProps.word, function(data) {
+                _this.setState(data);
+            });
+        }, delay);
+    },
+    shouldComponentUpdate: function(nextProps, nextState) {
+        return nextProps.word != this.props.word || this.update;
     },
     renderDefinitionComponents: function(components) {
         if (!components || components.length === 0) { return <div></div>; }
@@ -128,6 +119,7 @@ var DictionaryFrame = React.createClass({
         });
     },
     render: function() {
+        this.update = false;
         var components = this.renderDefinitionComponents(this.state.results);
         return <div style={style.frame}>{components}</div>;
     }

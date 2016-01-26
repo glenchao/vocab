@@ -1,11 +1,13 @@
+var Vocab = require("./VocabModel");
+
 module.exports = {
     navbarHeight: 75,
-    objectToArray: function(obj) {
+    vocabObjectsToArray: function(obj) {
         var ret = [];
         for (var key in obj) {
             if(obj.hasOwnProperty(key)) {
-                obj[key].id = key;
-                ret.push(obj[key]);
+                var v = obj[key];
+                ret.push(new Vocab(v.id, v.word, v.definitions, v.examples));
             }
         }
         return ret;
@@ -25,16 +27,16 @@ module.exports = {
     copyVocab: function(v) {
         return {
             id: v.id,
-            vocab: v.vocab,
+            word: v.word,
             definitions: v.definitions.slice(),
             examples: v.examples.slice()
         };
     },
     compareVocabs: function(v1, v2) {
-        if (!v1 || !v1.vocab || !v1.definitions || !v1.examples||
-            !v2|| !v2.vocab|| !v2.definitions || !v2.examples ||
+        if (!v1 || !v1.word || !v1.definitions || !v1.examples||
+            !v2|| !v2.word|| !v2.definitions || !v2.examples ||
             v1.id != v2.id ||
-            v1.vocab != v2.vocab|| 
+            v1.word != v2.word|| 
             v1.definitions.length != v2.definitions.length||
             v1.examples.length != v2.examples.length) {
             return false;

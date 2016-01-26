@@ -18,30 +18,24 @@ var Store = function() {
     function on(callback) {
         Vocab.on("value", function(data) {
             if (callback && typeof callback === "function") {
-                callback(Util.objectToArray(data.val()));
+                callback(Util.vocabObjectsToArray(data.val()));
             }
         });
     }
 
     function add(vocab, callback) {
-        if (!vocab || !vocab.vocab) { return; }
-        var data = Vocab.push({
-                vocab: vocab.vocab,
-                definitions: vocab.definitions,
-                examples: vocab.examples
-            }, function(err) {
+        if (!vocab || !vocab.word) { return; }
+        var _ref = Vocab.push();
+        vocab.id = _ref.key(); 
+        _ref.set(vocab, function(err) {
                 if (err) { alert(err); }
-                if (callback && typeof callback === "function") { callback(err, data.key()); }
+                if (callback && typeof callback === "function") { callback(err, vocab.id); }
             });
         }
 
     function update(vocab, callback) {
-        if (!vocab || !vocab.id || !vocab.vocab) { return; }
-        Vocab.child(vocab.id).update({
-            vocab: vocab.vocab,
-            definitions: vocab.definitions,
-            examples: vocab.examples
-        }, function(err) {
+        if (!vocab || !vocab.id || !vocab.word) { return; }
+        Vocab.child(vocab.id).update(vocab, function(err) {
             if (err) { alert(err); }
             else { 
                 if (callback && typeof callback === "function") { callback(); }

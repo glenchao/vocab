@@ -7,6 +7,7 @@ var VocabList = require("./vocabList");
 var InputForm = require("./inputForm");
 var DictionaryFrame = require("./dictionaryFrame");
 var Util = require("./util");
+var Vocab = require("./VocabModel");
 
 var style= {
     container: {
@@ -20,29 +21,30 @@ var style= {
 };
 
 var App = React.createClass({
-    getInitialState: function() {
-        return {vocab: null};
-    },
-    onVocabChanged: function(vocab) {
-        
+    onNewVocabButtonClick: function() {
+        this.setState({ vocab: new Vocab() });
     },
     onSelectionChanged: function(vocab) {
-        this.setState({vocab: vocab});
+        var v = vocab || new Vocab();
+        this.setState({ vocab: v });
+    },
+    getInitialState: function() {
+        return { vocab: new Vocab() };
     },
     render: function() {
-        var word = this.state.vocab ? this.state.vocab.vocab : "";
+        var vocab = this.state.vocab;
         return <div>
-                    <TopNav onNewVocab={this.onSelectionChanged} authData={this.props.authData}/>
+                    <TopNav onNewVocabButtonClick={this.onNewVocabButtonClick} authData={this.props.authData}/>
                     <div className="container-fluid">
                         <div className="row" style={style.container}> 
                             <div className="col-sm-3" style={style.col}>
-                                <VocabList selectedVocab={this.state.vocab} onSelectionChanged={this.onSelectionChanged} />
+                                <VocabList selectedVocabId={vocab.id} onSelectionChanged={this.onSelectionChanged} />
                             </div>
                             <div className="col-sm-4" style={style.col}>
-                                <InputForm vocab={this.state.vocab} onNewVocab={this.onSelectionChanged} />
+                                <InputForm vocab={vocab} onNewVocabCreated={this.onSelectionChanged} onVocabWordChanged={this.onSelectionChanged} />
                             </div>
                             <div className="col-sm-5" style={style.col}>
-                                <DictionaryFrame word={word} />
+                                <DictionaryFrame word={vocab.word} delay={1000} />
                             </div>
                         </div>
                    </div>

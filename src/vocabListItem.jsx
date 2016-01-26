@@ -16,7 +16,7 @@ var VocabListItem = React.createClass({
     render: function() {
         var className = this.props.isSelected ? "list-group-item active" : "list-group-item";
         return <a className={className} style={style} onClick={this.onSelected}>
-                    <span>{this.props.vocab.vocab}</span>
+                    <span>{this.props.vocab.word}</span>
                </a>;
     }
 });

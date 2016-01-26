@@ -19,15 +19,15 @@ var style = {
 
 var VocabList = React.createClass({
     updateCurrentVocab: function(vocab) {
-        this.setState({selectedVocab: vocab});
+        this.setState({selectedVocabId: vocab.id});
         // todo: figure out how to stop re-rendering
         if (this.props.onSelectionChanged)
             this.props.onSelectionChanged(vocab);
     },
     getInitialState: function() {
-        return {vocabs: [], selectedVocab: {}};
+        return {vocabs: [], selectedVocabId: ""};
     },
-    componentWillMount: function() {
+    componentDidMount: function() {
         var _this = this;
         VocabStore.on(function(vocabs) {
             _this.setState({vocabs: vocabs.reverse()});
@@ -36,18 +36,20 @@ var VocabList = React.createClass({
     componentWillReceiveProps: function(nextProps) {
         this.setState({
             vocabs: this.state.vocabs,
-            selectedVocab: nextProps.selectedVocab
+            selectedVocabId: nextProps.selectedVocabId
         });
     },
     render: function() {
         var _this = this;
         var listItems;
         if (this.state.vocabs.length === 0) {
+            // no vocabs
             listItems = <div style={style.emptyMessage}>You currently have no vocabs added.</div>;
         }
         else {
+            // has vocabs
             listItems = this.state.vocabs.map(function(vocab, index) {
-                var bIsSelected = (!!_this.state.selectedVocab && vocab.id === _this.state.selectedVocab.id);
+                var bIsSelected = (!!_this.state.selectedVocabId && vocab.id === _this.state.selectedVocabId);
                 return <VocabListItem vocab={vocab} onSelected={_this.updateCurrentVocab} isSelected={bIsSelected} key={index} />;
             });
         }
