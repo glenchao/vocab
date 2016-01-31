@@ -1,4 +1,5 @@
 var React = require("react");
+var Dispatcher = require("./simpleDispatcher");
 
 var style = {
     fontSize: "13pt",
@@ -9,7 +10,7 @@ var style = {
 };
 var VocabListItem = React.createClass({
     onSelected: function(event) {
-        this.props.onSelected(this.props.vocab);
+        Dispatcher.trigger(Dispatcher.eventTypes.onVocabSelected, this.props.vocab);
         event.stopPropagation();
         return false;
     },

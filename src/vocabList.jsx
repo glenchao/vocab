@@ -1,6 +1,6 @@
 var React = require("react");
+var Dispatcher = require("./simpleDispatcher");
 var VocabListItem = require("./vocabListItem");
-var VocabStore = require("./vocabStore");
 
 var style = {
     container: {
@@ -18,44 +18,40 @@ var style = {
 };
 
 var VocabList = React.createClass({
-    updateCurrentVocab: function(vocab) {
-        this.setState({selectedVocabId: vocab.id});
-        // todo: figure out how to stop re-rendering
-        if (this.props.onSelectionChanged)
-            this.props.onSelectionChanged(vocab);
+    onSelectionChanged: function(event, vocab) {
+        var _id = vocab ? vocab.id : "";
+        this.setState({selectedVocabId: _id});
     },
     getInitialState: function() {
-        return {vocabs: [], selectedVocabId: ""};
+        return {selectedVocabId: ""};
     },
     componentDidMount: function() {
-        var _this = this;
-        VocabStore.on(function(vocabs) {
-            _this.setState({vocabs: vocabs.reverse()});
-        });
+        Dispatcher.register(Dispatcher.eventTypes.onVocabSelected, this.onSelectionChanged);
+        Dispatcher.register(Dispatcher.eventTypes.onNewVocabButtonClicked, this.onSelectionChanged);
+        Dispatcher.register(Dispatcher.eventTypes.onNewVocabCreated, this.onSelectionChanged);
     },
-    componentWillReceiveProps: function(nextProps) {
-        this.setState({
-            vocabs: this.state.vocabs,
-            selectedVocabId: nextProps.selectedVocabId
-        });
+    componentWillUnmount: function() {
+        Dispatcher.unregister(Dispatcher.eventTypes.onVocabSelected, this.onSelectionChanged);
+        Dispatcher.unregister(Dispatcher.eventTypes.onNewVocabButtonClicked, this.onSelectionChanged);
+        Dispatcher.unregister(Dispatcher.eventTypes.onNewVocabCreated, this.onSelectionChanged);
     },
     render: function() {
         var _this = this;
         var listItems;
-        if (this.state.vocabs.length === 0) {
+        if (!this.props.vocabs || this.props.vocabs.length === 0) {
             // no vocabs
             listItems = <div style={style.emptyMessage}>You currently have no vocabs added.</div>;
         }
         else {
             // has vocabs
-            listItems = this.state.vocabs.map(function(vocab, index) {
+            listItems = this.props.vocabs.map(function(vocab, index) {
                 var bIsSelected = (!!_this.state.selectedVocabId && vocab.id === _this.state.selectedVocabId);
-                return <VocabListItem vocab={vocab} onSelected={_this.updateCurrentVocab} isSelected={bIsSelected} key={index} />;
+                return <VocabListItem vocab={vocab} onSelected={_this.onSelectionChanged} isSelected={bIsSelected} key={index} />;
             });
         }
 
         return <div className="list-group" style={style.container}>
-                    <div style={style.heading}>Vocab List</div>
+                    <div style={style.heading}>{this.props.title}</div>
                     {listItems}
                </div>;
     }

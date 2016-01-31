@@ -29,11 +29,8 @@ var TopNav = React.createClass({
                         </div>
                         <div className="collapse navbar-collapse" id="navbar-commands">
                             <div className="nav navbar-nav">
-                                <button type="button" className="btn btn-success navbar-btn" style={style.button} onClick={this.props.onNewVocabButtonClick}>
-                                    <span className="glyphicon glyphicon-plus"></span> New Vocab
-                                </button>
-                                <button type="button" className="btn btn-primary navbar-btn" style={style.button} onClick={this.props.onNewVocabButtonClick}>
-                                    <span className="glyphicon glyphicon-pencil"></span> Review Vocab
+                                <button type="button" className="btn btn-primary navbar-btn" style={style.button} onClick={this.props.onQuizButtonClicked}>
+                                    <span className="glyphicon glyphicon-pencil"></span> Quiz
                                 </button>
                             </div>
                             <ul className="nav navbar-nav navbar-right">

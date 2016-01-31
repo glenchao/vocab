@@ -3,6 +3,7 @@ var Util = require("./util");
 var DefinitionControl = require("./definitionControl");
 var VocabStore = require("./vocabStore");
 var Vocab = require("./vocabModel");
+var Dispatcher = require("./simpleDispatcher");
 
 var style = {
     container: {
@@ -11,7 +12,12 @@ var style = {
     title: {
         fontSize: "20pt",
         fontWeight: "bold",
-        paddingBottom: "20px"
+        height: "60px",
+        border: "none",
+        borderRadius: "0px",
+        boxShadow: "none",
+        paddingLeft: "0px",
+        color: "black"
     },
     button: {
         marginLeft: "10px"
@@ -24,9 +30,7 @@ var InputForm = React.createClass({
         var v = Util.copyVocab(this.state.vocab);
         v.word = event.target.value;
         this.setState({vocab: v});
-        if (_this.props.onVocabWordChanged && typeof _this.props.onVocabWordChanged === "function") {
-            _this.props.onVocabWordChanged(v);
-        }
+        Dispatcher.trigger(Dispatcher.eventTypes.onWordUpdated, v.word);
     },
     addDefinition: function(event) {
         if (event.key === "Enter" && !!event.target.value) {
@@ -56,58 +60,66 @@ var InputForm = React.createClass({
         else { v.examples.splice(index, 1); }
         this.setState({vocab: v});
     },
-    onAddVocabSuceeded: function(err, id) {
-        var v = this.state.vocab;
-        v.id = id;
-        if (this.props.onNewVocabCreated && typeof this.props.onNewVocabCreated === "function") {
-            this.props.onNewVocabCreated(v);
-        }
-    },
     save: function() {
         if (this.state.vocab.id) {
             VocabStore.update(this.state.vocab);
         }
         else {
-            VocabStore.add(this.state.vocab, this.onAddVocabSuceeded);
+            VocabStore.add(this.state.vocab, function(err, vocab) {
+                Dispatcher.trigger(Dispatcher.eventTypes.onNewVocabCreated, vocab);
+            });
         }
     },
     delete: function() {
         var _this = this;
         VocabStore.delete(this.state.vocab.id, function() {
-            if (_this.props.onNewVocabCreated && typeof _this.props.onNewVocabCreated === "function") {
-                _this.props.onNewVocabCreated();
-            }
+            Dispatcher.trigger(Dispatcher.eventTypes.onNewVocabButtonClicked);
         });
+    },
+    setVocab: function(event, vocab) {
+        if (!vocab) { vocab = new Vocab(); }
+        this.setState({vocab: vocab});
     },
     getInitialState: function() {
         return {vocab: new Vocab()};
     },
-    componentWillReceiveProps: function(nextProps) {
-        this.setState({vocab: nextProps.vocab});
+    componentDidMount: function() {
+        Dispatcher.register(Dispatcher.eventTypes.onVocabSelected, this.setVocab);
+        Dispatcher.register(Dispatcher.eventTypes.onNewVocabButtonClicked, this.setVocab);
+    },
+    componentWillUnmount: function() {
+        Dispatcher.unregister(Dispatcher.eventTypes.onVocabSelected, this.setVocab);
+        Dispatcher.unregister(Dispatcher.eventTypes.onNewVocabButtonClicked, this.setVocab);
     },
     shouldComponentUpdate: function(nextProps, nextState) {
         return !(Util.compareVocabs(this.props.vocab, nextProps.vocab) &&
-                 Util.compareVocabs(this.state.vocab, nextState.vocab)); 
+               Util.compareVocabs(this.state.vocab, nextState.vocab)); 
     },
     render: function() {
         var _this = this;
         var vocab = this.state.vocab;
-        var title = vocab.word || "Add a new vocab";
-        var definitions = vocab.definitions.map(function(value, index) {
-            return <DefinitionControl key={index} index={index} text={value} onDefinitionUpdated={_this.updateDefinition} />
-        });
-        var examples = vocab.examples.map(function(value, index) {
-            return <DefinitionControl key={index} index={index} text={value} onDefinitionUpdated={_this.updateExample} />
-        });
+        
+        var definitions;
+        if (vocab.definitions) {
+            definitions = vocab.definitions.map(function(value, index) {
+                return <DefinitionControl key={index} index={index} text={value} onDefinitionUpdated={_this.updateDefinition} />
+            });
+        }
+        
+        var examples;
+        if (vocab.examples) {
+            examples = vocab.examples.map(function(value, index) {
+                return <DefinitionControl key={index} index={index} text={value} onDefinitionUpdated={_this.updateExample} />
+            });
+        }
         // only render delete button is the vocab has already been saved
         var deleteButton = vocab.id ? <button type="button" className="btn btn-danger" style={style.button} onClick={this.delete}>Delete</button> : <span></span>;
         // render
         return <div key={vocab.id} style={style.container}>
-                    <div style={style.title}>{title}</div>
                     <form>
                         <div className="form-group">
-                            <label htmlFor="vocabInput">Vocab</label>
-                            <input id="vocabInput" className="form-control" type="text" placeholder="New vocab to add..." onChange={this.changeVocab} value={vocab.word}></input>
+                            <input id="vocabInput" className="form-control" style={style.title} type="text"
+                                   placeholder="Add a new vocab" onChange={this.changeVocab} value={vocab.word}></input>
                         </div>
                         <div className="form-group">
                             <label htmlFor="definitionInput">Definitions</label>

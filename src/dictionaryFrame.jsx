@@ -1,4 +1,5 @@
 var React = require("react");
+var Dispatcher = require("./simpleDispatcher");
 
 var wordApiPath = 'https://wordsapiv1.p.mashape.com';
 var apiKey = "2Tg5smk9qJmshShmeHeiHgQWKKJmp1wmOsZjsnoisK3hxKSniY";
@@ -70,8 +71,24 @@ var DefinitionComponent = React.createClass({
 
 var vocabInputTimer;
 var DictionaryFrame = React.createClass({
-    onVocabWordChanged: function(word) {
-        
+    onVocabSelected: function(event, vocab) {
+        var word = vocab ? vocab.word : "";
+        this.onWordUpdated(event, word);
+    },
+    onWordUpdated: function(event, word) {
+        var _this = this;
+        var delay = this.props.delay || 0;
+        if (word && typeof word === "string") {
+            window.clearTimeout(vocabInputTimer);
+            vocabInputTimer = window.setTimeout(function() {
+                _this.makeWordRequest(word, function(data) {
+                    _this.setState(data);
+                });
+            }, delay);
+        }
+        else {
+            this.setState({results: []});
+        }
     },
     makeWordRequest: function(word, callback) {
         var empty = {word: "", results: []};
@@ -96,20 +113,15 @@ var DictionaryFrame = React.createClass({
     getInitialState: function() {
         return {results: []};
     },
-    componentWillReceiveProps: function(nextProps) {
-        var _this = this;
-        var delay = nextProps.delay || 0;
-        if (nextProps.word) {
-            window.clearTimeout(vocabInputTimer);
-            vocabInputTimer = window.setTimeout(function() {
-                _this.makeWordRequest(nextProps.word, function(data) {
-                    _this.setState(data);
-                });
-            }, delay);
-        }
-        else {
-            this.setState({results: []});
-        }
+    componentDidMount: function() {
+        Dispatcher.register(Dispatcher.eventTypes.onWordUpdated, this.onWordUpdated);
+        Dispatcher.register(Dispatcher.eventTypes.onVocabSelected, this.onVocabSelected);
+        Dispatcher.register(Dispatcher.eventTypes.onNewVocabButtonClicked, this.onVocabSelected);
+    },
+    componentWillUnmount: function() {
+        Dispatcher.unregister(Dispatcher.eventTypes.onWordUpdated, this.onWordUpdated);
+        Dispatcher.unregister(Dispatcher.eventTypes.onVocabSelected, this.onVocabSelected);
+        Dispatcher.unregister(Dispatcher.eventTypes.onNewVocabButtonClicked, this.onVocabSelected);
     },
     renderDefinitionComponents: function(components) {
         if (!components || components.length === 0) { return <div></div>; }
